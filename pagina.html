@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UFC 330 — Makhachev vs. Machado Garry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#EDE7DA;
+    --canvas-2:#E3DCCC;
+    --ink:#1C1A17;
+    --crimson:#A31621;
+    --gold:#A8823C;
+    --muted:#8B8377;
+    --line: rgba(28,26,23,0.14);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:0.035;
+    background-image:
+      repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 3px);
+    z-index:0;
+  }
+
+  /* ---------- HERO ---------- */
+  header{
+    padding:56px 0 0;
+    position:relative;
+    z-index:1;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--crimson);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:1px;
+    background:var(--crimson);
+  }
+
+  h1.event-title{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    font-size:clamp(48px, 11vw, 96px);
+    line-height:0.9;
+    letter-spacing:-0.01em;
+    margin-top:14px;
+  }
+  h1.event-title .accent{ color:var(--crimson); }
+
+  .meta-row{
+    margin-top:22px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:14px 0;
+  }
+  .meta-row strong{
+    color:var(--ink);
+    font-weight:600;
+    display:block;
+    font-size:14px;
+    margin-bottom:2px;
+    font-family:'Inter',sans-serif;
+  }
+  .meta-item span.label{
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-size:11px;
+  }
+
+  .countdown{
+    display:flex;
+    gap:22px;
+    margin:26px 0 40px;
+  }
+  .countdown div{ text-align:left; }
+  .countdown .num{
+    font-family:'Anton',sans-serif;
+    font-size:38px;
+    line-height:1;
+    color:var(--ink);
+  }
+  .countdown .lbl{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-top:4px;
+  }
+
+  /* ---------- TICKET PERFORATION DIVIDER ---------- */
+  .perforation{
+    position:relative;
+    height:28px;
+    margin:6px 0 8px;
+    background:
+      radial-gradient(circle, var(--canvas) 6px, transparent 6.5px) 0 0 / 24px 100% repeat-x;
+  }
+  .perforation::before{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    border-top:1.5px dashed var(--muted);
+    top:50%;
+  }
+
+  /* ---------- CARD SECTION ---------- */
+  section.card-section{
+    position:relative;
+    z-index:1;
+    padding:8px 0 20px;
+  }
+
+  .section-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink);
+    background:var(--canvas-2);
+    display:inline-block;
+    padding:5px 12px;
+    margin-bottom:18px;
+    border:1px solid var(--line);
+  }
+
+  .bout{
+    display:grid;
+    grid-template-columns:34px 1fr;
+    gap:16px;
+    padding:24px 0;
+    border-bottom:1px solid var(--line);
+    transition:background 0.15s ease, padding-left 0.15s ease;
+  }
+  .bout:hover{
+    background:rgba(163,22,33,0.04);
+    padding-left:8px;
+  }
+  .bout:last-child{ border-bottom:none; }
+
+  .bout-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+    padding-top:4px;
+  }
+
+  .bout-tags{
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border:1px solid currentColor;
+  }
+  .tag.title{ color:var(--gold); }
+  .tag.main{ color:var(--crimson); }
+  .tag.co{ color:var(--muted); }
+  .tag.weight{ color:var(--muted); border-color:var(--line); }
+
+  .versus{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .fighter{ flex:1; min-width:130px; }
+  .fighter.right{ text-align:right; }
+
+  .fighter-name{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(20px,4.4vw,28px);
+    text-transform:uppercase;
+    line-height:1.02;
+  }
+  .fighter-record{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+
+  .vs-mark{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--crimson);
+    padding:0 4px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    position:relative;
+    z-index:1;
+    padding:40px 0 60px;
+    border-top:1px solid var(--line);
+    margin-top:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:18px;
+  }
+  .venue-info{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  .venue-info strong{ color:var(--ink); font-family:'Inter',sans-serif; }
+
+  .cta{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:var(--canvas);
+    padding:14px 26px;
+    border:none;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .cta:hover{ background:var(--crimson); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+
+  @media (max-width:480px){
+    .bout{grid-template-columns:24px 1fr;}
+    .versus{flex-direction:column; align-items:flex-start;}
+    .fighter.right{text-align:left;}
+    .vs-mark{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Pago por evento · Xfinity Mobile Arena</p>
+    <h1 class="event-title">UFC 330<br><span class="accent">Makhachev vs. Machado Garry</span></h1>
+
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="label">Fecha</span>
+        <strong>Sábado 15 de agosto, 2026</strong>
+      </div>
+      <div class="meta-item">
+        <span class="label">Sede</span>
+        <strong>Xfinity Mobile Arena, Filadelfia</strong>
+      </div>
+      <div class="meta-item">
+        <span class="label">Cartelera principal</span>
+        <strong>9:00 PM ET</strong>
+      </div>
+    </div>
+
+    <div class="countdown" id="countdown">
+      <div><div class="num" id="cd-days">--</div><div class="lbl">Días</div></div>
+      <div><div class="num" id="cd-hours">--</div><div class="lbl">Horas</div></div>
+      <div><div class="num" id="cd-mins">--</div><div class="lbl">Min</div></div>
+      <div><div class="num" id="cd-secs">--</div><div class="lbl">Seg</div></div>
+    </div>
+  </header>
+
+  <div class="perforation"></div>
+
+  <section class="card-section">
+    <span class="section-label">Solo estelares</span>
+
+    <div class="bout">
+      <div class="bout-num">01</div>
+      <div>
+        <div class="bout-tags">
+          <span class="tag title">Título</span>
+          <span class="tag main">Estelar</span>
+          <span class="tag weight">Peso Wélter</span>
+        </div>
+        <div class="versus">
+          <div class="fighter">
+            <div class="fighter-name">Islam Makhachev</div>
+            <div class="fighter-record">28-1-0 · Campeón</div>
+          </div>
+          <span class="vs-mark">VS</span>
+          <div class="fighter right">
+            <div class="fighter-name">Ian Machado Garry</div>
+            <div class="fighter-record">17-1-0 · Retador</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bout">
+      <div class="bout-num">02</div>
+      <div>
+        <div class="bout-tags">
+          <span class="tag title">Título</span>
+          <span class="tag co">Co-estelar</span>
+          <span class="tag weight">Peso Paja</span>
+        </div>
+        <div class="versus">
+          <div class="fighter">
+            <div class="fighter-name">Mackenzie Dern</div>
+            <div class="fighter-record">16-5-0 · Campeona</div>
+          </div>
+          <span class="vs-mark">VS</span>
+          <div class="fighter right">
+            <div class="fighter-name">Gillian Robertson</div>
+            <div class="fighter-record">17-8-0 · Retadora</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bout">
+      <div class="bout-num">03</div>
+      <div>
+        <div class="bout-tags">
+          <span class="tag weight">Peso Medio</span>
+        </div>
+        <div class="versus">
+          <div class="fighter">
+            <div class="fighter-name">Mansur Abdul-Malik</div>
+            <div class="fighter-record">9-1-1</div>
+          </div>
+          <span class="vs-mark">VS</span>
+          <div class="fighter right">
+            <div class="fighter-name">Dustin Stoltzfus</div>
+            <div class="fighter-record">16-8-0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bout">
+      <div class="bout-num">04</div>
+      <div>
+        <div class="bout-tags">
+          <span class="tag weight">Peso Ligero</span>
+        </div>
+        <div class="versus">
+          <div class="fighter">
+            <div class="fighter-name">Edson Barboza</div>
+            <div class="fighter-record">24-14-0</div>
+          </div>
+          <span class="vs-mark">VS</span>
+          <div class="fighter right">
+            <div class="fighter-name">Esteban Ribovics</div>
+            <div class="fighter-record">15-3-0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bout">
+      <div class="bout-num">05</div>
+      <div>
+        <div class="bout-tags">
+          <span class="tag weight">Peso Mosca</span>
+        </div>
+        <div class="versus">
+          <div class="fighter">
+            <div class="fighter-name">Charles Johnson</div>
+            <div class="fighter-record">19-9-0</div>
+          </div>
+          <span class="vs-mark">VS</span>
+          <div class="fighter right">
+            <div class="fighter-name">Eduardo Henrique</div>
+            <div class="fighter-record">15-2-0 · Debut en UFC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="venue-info">
+      <strong>Xfinity Mobile Arena</strong><br>
+      Filadelfia, Pensilvania · Transmite Paramount+
+    </div>
+    <button class="cta">Ver transmisión</button>
+  </footer>
+
+</div>
+
+<script>
+  // Countdown al inicio de la cartelera principal (9:00 PM ET, 15 ago 2026)
+  const eventDate = new Date("2026-08-15T21:00:00-04:00").getTime();
+
+  function updateCountdown(){
+    const now = new Date().getTime();
+    const diff = eventDate - now;
+
+    const els = {
+      d: document.getElementById('cd-days'),
+      h: document.getElementById('cd-hours'),
+      m: document.getElementById('cd-mins'),
+      s: document.getElementById('cd-secs')
+    };
+
+    if (diff <= 0){
+      els.d.textContent = '00';
+      els.h.textContent = '00';
+      els.m.textContent = '00';
+      els.s.textContent = '00';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const secs = Math.floor((diff % (1000*60)) / 1000);
+
+    els.d.textContent = String(days).padStart(2,'0');
+    els.h.textContent = String(hours).padStart(2,'0');
+    els.m.textContent = String(mins).padStart(2,'0');
+    els.s.textContent = String(secs).padStart(2,'0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
