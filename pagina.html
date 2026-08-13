@@ -208,6 +208,71 @@
     margin:8px 0 8px;
   }
 
+  /* ---------- PREDICTION / ODDS BAR ---------- */
+  .odds-block{
+    border:1px solid var(--line);
+    padding:22px 24px 26px;
+    margin-bottom:36px;
+  }
+  .odds-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .odds-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .odds-source{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:var(--muted);
+    opacity:0.7;
+  }
+  .odds-bar{
+    display:flex;
+    height:34px;
+    width:100%;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .odds-bar .seg{
+    display:flex;
+    align-items:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:var(--bg);
+    padding:0 12px;
+    white-space:nowrap;
+  }
+  .odds-bar .seg.fav{ background:var(--gold); justify-content:flex-start; }
+  .odds-bar .seg.dog{ background:var(--crimson); color:var(--ink); justify-content:flex-end; }
+
+  .odds-labels{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .odds-labels strong{ color:var(--ink); font-family:'Inter',sans-serif; font-size:12px; }
+
+  .odds-note{
+    margin-top:16px;
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.55;
+  }
+  .odds-note b{ color:var(--ink); font-weight:600; }
+
   /* ---------- CARD SECTION ---------- */
   section.card-section{ padding:8px 0 20px; }
 
@@ -367,6 +432,27 @@
         <div class="corner-record">17-1-0</div>
       </div>
     </div>
+  </div>
+
+  <div class="odds-block">
+    <div class="odds-head">
+      <span class="odds-title">Predicción del mercado</span>
+      <span class="odds-source">Cuotas de casas de apuestas · semana del combate</span>
+    </div>
+    <div class="odds-bar">
+      <div class="seg fav" style="width:73%">MAKHACHEV</div>
+      <div class="seg dog" style="width:27%">GARRY</div>
+    </div>
+    <div class="odds-labels">
+      <div><strong>-350</strong> · favorito</div>
+      <div><strong>+255</strong> · underdog</div>
+    </div>
+    <p class="odds-note">
+      El mercado ve a <b>Makhachev como favorito claro</b>, con una probabilidad implícita cercana al 73%.
+      Garry entra como <b>underdog a +255</b>: una apuesta de $100.000 a su favor pagaría cerca de $355.000 si gana.
+      Las cuotas de Betplay pueden variar un poco frente a otras casas y cambian según se acerque el evento —
+      esto es una referencia del mercado, no una cuota fija.
+    </p>
   </div>
 
   <div class="rule"></div>
