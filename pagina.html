@@ -273,6 +273,17 @@
   }
   .odds-note b{ color:var(--ink); font-weight:600; }
 
+  /* ---------- CHAMPION BELT ICON ---------- */
+  .belt-icon{
+    display:inline-flex;
+    vertical-align:middle;
+    margin-right:8px;
+    transform:translateY(-3px);
+  }
+  .belt-icon svg{ display:block; }
+  .corner-name .belt-icon svg{ width:26px; height:26px; }
+  .fighter-name .belt-icon svg{ width:18px; height:18px; }
+
   /* ---------- HOW TO WATCH ---------- */
   .watch-grid{
     display:grid;
@@ -518,7 +529,7 @@
     <div class="versus-big">
       <div class="corner red">
         <div class="corner-label">Esquina roja · Campeón</div>
-        <div class="corner-name">Islam Makhachev</div>
+        <div class="corner-name"><span class="belt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M2 11h4v2H2v-2zM18 11h4v2h-4v-2z" fill="var(--gold)"/><rect x="6" y="9" width="12" height="6" rx="1" fill="var(--gold)"/><circle cx="12" cy="12" r="2.6" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.3"/></svg></span>Islam Makhachev</div>
         <div class="corner-record">28-1-0</div>
       </div>
       <span class="vs-big">VS</span>
@@ -565,7 +576,7 @@
         </div>
         <div class="versus">
           <div class="fighter">
-            <div class="fighter-name">Mackenzie Dern</div>
+            <div class="fighter-name"><span class="belt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M2 11h4v2H2v-2zM18 11h4v2h-4v-2z" fill="var(--gold)"/><rect x="6" y="9" width="12" height="6" rx="1" fill="var(--gold)"/><circle cx="12" cy="12" r="2.6" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.3"/></svg></span>Mackenzie Dern</div>
             <div class="fighter-record">16-5-0 · Campeona</div>
           </div>
           <span class="vs-mark">VS</span>
