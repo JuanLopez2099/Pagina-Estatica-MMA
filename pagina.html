@@ -8,49 +8,88 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --canvas:#EDE7DA;
-    --canvas-2:#E3DCCC;
-    --ink:#1C1A17;
-    --crimson:#A31621;
-    --gold:#A8823C;
-    --muted:#8B8377;
-    --line: rgba(28,26,23,0.14);
+    --bg:#0B0B0A;
+    --bg-2:#151412;
+    --ink:#EDE7DA;
+    --crimson:#D63C2E;
+    --gold:#C79A4B;
+    --muted:#8A8478;
+    --line: rgba(237,231,218,0.12);
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
-
   html{scroll-behavior:smooth;}
 
   body{
-    background:var(--canvas);
+    background:var(--bg);
     color:var(--ink);
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
   }
 
   .wrap{
     max-width:760px;
     margin:0 auto;
     padding:0 24px;
+    position:relative;
+    z-index:2;
   }
 
-  body::before{
+  /* film grain */
+  body::after{
     content:"";
     position:fixed;
     inset:0;
     pointer-events:none;
-    opacity:0.035;
+    opacity:0.05;
     background-image:
-      repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 3px);
+      repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px);
+    z-index:1;
+    mix-blend-mode:overlay;
+  }
+
+  /* ---------- ARENA BACKDROP (signature) ---------- */
+  .arena-bg{
+    position:fixed;
+    inset:0;
     z-index:0;
+    overflow:hidden;
+  }
+  /* twin spotlights, one crimson (red corner) one gold (blue/champion corner) */
+  .arena-bg::before,
+  .arena-bg::after{
+    content:"";
+    position:absolute;
+    top:-10%;
+    width:65%;
+    height:130%;
+    filter:blur(70px);
+    opacity:0.35;
+  }
+  .arena-bg::before{
+    left:-15%;
+    background:radial-gradient(ellipse at center, var(--crimson) 0%, transparent 65%);
+  }
+  .arena-bg::after{
+    right:-15%;
+    background:radial-gradient(ellipse at center, var(--gold) 0%, transparent 65%);
+  }
+  /* octagon cage pattern */
+  .cage{
+    position:absolute;
+    inset:0;
+    opacity:0.10;
+    background-image:
+      repeating-linear-gradient(60deg, transparent, transparent 38px, var(--ink) 38px, var(--ink) 39px),
+      repeating-linear-gradient(-60deg, transparent, transparent 38px, var(--ink) 38px, var(--ink) 39px),
+      repeating-linear-gradient(0deg, transparent, transparent 38px, var(--ink) 38px, var(--ink) 39px);
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, #000 0%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, #000 0%, transparent 75%);
   }
 
   /* ---------- HERO ---------- */
-  header{
-    padding:56px 0 0;
-    position:relative;
-    z-index:1;
-  }
+  header{ padding:64px 0 0; }
 
   .eyebrow{
     font-family:'IBM Plex Mono',monospace;
@@ -62,11 +101,7 @@
     align-items:center;
     gap:10px;
   }
-  .eyebrow::before{
-    content:"";
-    width:22px;height:1px;
-    background:var(--crimson);
-  }
+  .eyebrow::before{ content:""; width:22px;height:1px; background:var(--crimson); }
 
   h1.event-title{
     font-family:'Anton',sans-serif;
@@ -76,8 +111,9 @@
     line-height:0.9;
     letter-spacing:-0.01em;
     margin-top:14px;
+    text-shadow: 0 0 40px rgba(0,0,0,0.6);
   }
-  h1.event-title .accent{ color:var(--crimson); }
+  h1.event-title .accent{ color:var(--gold); }
 
   .meta-row{
     margin-top:22px;
@@ -99,23 +135,15 @@
     margin-bottom:2px;
     font-family:'Inter',sans-serif;
   }
-  .meta-item span.label{
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    font-size:11px;
-  }
+  .meta-item span.label{ text-transform:uppercase; letter-spacing:0.08em; font-size:11px; }
 
-  .countdown{
-    display:flex;
-    gap:22px;
-    margin:26px 0 40px;
-  }
+  .countdown{ display:flex; gap:22px; margin:26px 0 44px; }
   .countdown div{ text-align:left; }
   .countdown .num{
     font-family:'Anton',sans-serif;
     font-size:38px;
     line-height:1;
-    color:var(--ink);
+    color:var(--gold);
   }
   .countdown .lbl{
     font-family:'IBM Plex Mono',monospace;
@@ -126,28 +154,62 @@
     margin-top:4px;
   }
 
-  /* ---------- TICKET PERFORATION DIVIDER ---------- */
-  .perforation{
+  /* ---------- MAIN EVENT SPOTLIGHT ---------- */
+  .spotlight{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(198,58,46,0.07), rgba(199,154,75,0.05));
+    padding:28px 24px;
+    margin-bottom:36px;
     position:relative;
-    height:28px;
-    margin:6px 0 8px;
-    background:
-      radial-gradient(circle, var(--canvas) 6px, transparent 6.5px) 0 0 / 24px 100% repeat-x;
   }
-  .perforation::before{
-    content:"";
-    position:absolute;
-    left:0; right:0;
-    border-top:1.5px dashed var(--muted);
-    top:50%;
+  .spotlight-tags{ display:flex; gap:8px; margin-bottom:16px; }
+  .versus-big{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .corner{ flex:1; min-width:140px; }
+  .corner.blue{ text-align:right; }
+  .corner-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .corner.red .corner-label{ color:var(--crimson); }
+  .corner.blue .corner-label{ color:var(--gold); }
+  .corner-name{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(26px,6vw,40px);
+    text-transform:uppercase;
+    line-height:0.95;
+  }
+  .corner-record{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .vs-big{
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    color:var(--ink);
+    opacity:0.4;
+    padding:0 8px;
+  }
+
+  /* ---------- DIVIDER ---------- */
+  .rule{
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+    margin:8px 0 8px;
   }
 
   /* ---------- CARD SECTION ---------- */
-  section.card-section{
-    position:relative;
-    z-index:1;
-    padding:8px 0 20px;
-  }
+  section.card-section{ padding:8px 0 20px; }
 
   .section-label{
     font-family:'IBM Plex Mono',monospace;
@@ -155,7 +217,7 @@
     letter-spacing:0.14em;
     text-transform:uppercase;
     color:var(--ink);
-    background:var(--canvas-2);
+    background:var(--bg-2);
     display:inline-block;
     padding:5px 12px;
     margin-bottom:18px;
@@ -170,10 +232,7 @@
     border-bottom:1px solid var(--line);
     transition:background 0.15s ease, padding-left 0.15s ease;
   }
-  .bout:hover{
-    background:rgba(163,22,33,0.04);
-    padding-left:8px;
-  }
+  .bout:hover{ background:rgba(214,60,46,0.06); padding-left:8px; }
   .bout:last-child{ border-bottom:none; }
 
   .bout-num{
@@ -183,12 +242,7 @@
     padding-top:4px;
   }
 
-  .bout-tags{
-    display:flex;
-    gap:8px;
-    margin-bottom:10px;
-    flex-wrap:wrap;
-  }
+  .bout-tags{ display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
   .tag{
     font-family:'IBM Plex Mono',monospace;
     font-size:10px;
@@ -197,24 +251,16 @@
     padding:3px 8px;
     border:1px solid currentColor;
   }
-  .tag.title{ color:var(--gold); }
-  .tag.main{ color:var(--crimson); }
-  .tag.co{ color:var(--muted); }
+  .tag.co{ color:var(--gold); }
   .tag.weight{ color:var(--muted); border-color:var(--line); }
 
-  .versus{
-    display:flex;
-    align-items:baseline;
-    justify-content:space-between;
-    gap:14px;
-    flex-wrap:wrap;
-  }
+  .versus{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   .fighter{ flex:1; min-width:130px; }
   .fighter.right{ text-align:right; }
 
   .fighter-name{
     font-family:'Anton',sans-serif;
-    font-size:clamp(20px,4.4vw,28px);
+    font-size:clamp(20px,4.4vw,26px);
     text-transform:uppercase;
     line-height:1.02;
   }
@@ -224,18 +270,10 @@
     color:var(--muted);
     margin-top:4px;
   }
-
-  .vs-mark{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    color:var(--crimson);
-    padding:0 4px;
-  }
+  .vs-mark{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--crimson); padding:0 4px; }
 
   /* ---------- FOOTER ---------- */
   footer{
-    position:relative;
-    z-index:1;
     padding:40px 0 60px;
     border-top:1px solid var(--line);
     margin-top:12px;
@@ -245,12 +283,7 @@
     flex-wrap:wrap;
     gap:18px;
   }
-  .venue-info{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    color:var(--muted);
-    line-height:1.6;
-  }
+  .venue-info{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); line-height:1.6; }
   .venue-info strong{ color:var(--ink); font-family:'Inter',sans-serif; }
 
   .cta{
@@ -258,14 +291,14 @@
     font-size:12px;
     letter-spacing:0.1em;
     text-transform:uppercase;
-    background:var(--ink);
-    color:var(--canvas);
+    background:var(--gold);
+    color:var(--bg);
     padding:14px 26px;
     border:none;
     cursor:pointer;
     transition:background 0.15s ease;
   }
-  .cta:hover{ background:var(--crimson); }
+  .cta:hover{ background:var(--crimson); color:var(--ink); }
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
@@ -277,10 +310,15 @@
     .versus{flex-direction:column; align-items:flex-start;}
     .fighter.right{text-align:left;}
     .vs-mark{display:none;}
+    .versus-big{flex-direction:column; align-items:flex-start;}
+    .corner.blue{text-align:left;}
+    .vs-big{padding:6px 0;}
   }
 </style>
 </head>
 <body>
+
+<div class="arena-bg"><div class="cage"></div></div>
 
 <div class="wrap">
 
@@ -311,39 +349,36 @@
     </div>
   </header>
 
-  <div class="perforation"></div>
-
-  <section class="card-section">
-    <span class="section-label">Solo estelares</span>
-
-    <div class="bout">
-      <div class="bout-num">01</div>
-      <div>
-        <div class="bout-tags">
-          <span class="tag title">Título</span>
-          <span class="tag main">Estelar</span>
-          <span class="tag weight">Peso Wélter</span>
-        </div>
-        <div class="versus">
-          <div class="fighter">
-            <div class="fighter-name">Islam Makhachev</div>
-            <div class="fighter-record">28-1-0 · Campeón</div>
-          </div>
-          <span class="vs-mark">VS</span>
-          <div class="fighter right">
-            <div class="fighter-name">Ian Machado Garry</div>
-            <div class="fighter-record">17-1-0 · Retador</div>
-          </div>
-        </div>
+  <div class="spotlight">
+    <div class="spotlight-tags">
+      <span class="tag" style="color:var(--gold)">Título · Peso Wélter</span>
+      <span class="tag" style="color:var(--crimson)">Estelar</span>
+    </div>
+    <div class="versus-big">
+      <div class="corner red">
+        <div class="corner-label">Esquina roja · Campeón</div>
+        <div class="corner-name">Islam Makhachev</div>
+        <div class="corner-record">28-1-0</div>
+      </div>
+      <span class="vs-big">VS</span>
+      <div class="corner blue">
+        <div class="corner-label">Esquina azul · Retador</div>
+        <div class="corner-name">Ian Machado Garry</div>
+        <div class="corner-record">17-1-0</div>
       </div>
     </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <section class="card-section">
+    <span class="section-label">Resto de la cartelera</span>
 
     <div class="bout">
       <div class="bout-num">02</div>
       <div>
         <div class="bout-tags">
-          <span class="tag title">Título</span>
-          <span class="tag co">Co-estelar</span>
+          <span class="tag co">Título · Co-estelar</span>
           <span class="tag weight">Peso Paja</span>
         </div>
         <div class="versus">
@@ -363,9 +398,7 @@
     <div class="bout">
       <div class="bout-num">03</div>
       <div>
-        <div class="bout-tags">
-          <span class="tag weight">Peso Medio</span>
-        </div>
+        <div class="bout-tags"><span class="tag weight">Peso Medio</span></div>
         <div class="versus">
           <div class="fighter">
             <div class="fighter-name">Mansur Abdul-Malik</div>
@@ -383,9 +416,7 @@
     <div class="bout">
       <div class="bout-num">04</div>
       <div>
-        <div class="bout-tags">
-          <span class="tag weight">Peso Ligero</span>
-        </div>
+        <div class="bout-tags"><span class="tag weight">Peso Ligero</span></div>
         <div class="versus">
           <div class="fighter">
             <div class="fighter-name">Edson Barboza</div>
@@ -403,9 +434,7 @@
     <div class="bout">
       <div class="bout-num">05</div>
       <div>
-        <div class="bout-tags">
-          <span class="tag weight">Peso Mosca</span>
-        </div>
+        <div class="bout-tags"><span class="tag weight">Peso Mosca</span></div>
         <div class="versus">
           <div class="fighter">
             <div class="fighter-name">Charles Johnson</div>
@@ -432,7 +461,6 @@
 </div>
 
 <script>
-  // Countdown al inicio de la cartelera principal (9:00 PM ET, 15 ago 2026)
   const eventDate = new Date("2026-08-15T21:00:00-04:00").getTime();
 
   function updateCountdown(){
@@ -447,10 +475,8 @@
     };
 
     if (diff <= 0){
-      els.d.textContent = '00';
-      els.h.textContent = '00';
-      els.m.textContent = '00';
-      els.s.textContent = '00';
+      els.d.textContent = '00'; els.h.textContent = '00';
+      els.m.textContent = '00'; els.s.textContent = '00';
       return;
     }
 
